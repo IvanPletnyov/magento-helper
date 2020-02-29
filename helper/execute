@@ -1,0 +1,25 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Framework\CommandManager\Service\ProcessCommand;
+use Framework\ConfigManager\Exceptions\ConfigImplementationException;
+use Framework\ObjectManager\Exceptions\ObjectManagerImplementationException;
+use Framework\ObjectManager\Exceptions\ObjectManagerNotFoundException;
+use Framework\ObjectManager\Service\BuildObjectManager;
+
+require __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
+    . 'lib' . DIRECTORY_SEPARATOR . 'init_application_configuration.php';
+
+try {
+    $buildObjectManager = new BuildObjectManager();
+    $objectManager = $buildObjectManager->execute();
+
+    /** @var ProcessCommand $processCommand */
+    $processCommand = $objectManager->get(ProcessCommand::class);
+    $processCommand->execute();
+} catch (ObjectManagerNotFoundException|ObjectManagerImplementationException|ConfigImplementationException $e) {
+    echo $e->getMessage();
+    die();
+}
